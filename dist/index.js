@@ -1419,7 +1419,7 @@ module.exports = (function (modules, runtime) {
 			const { spawn } = __webpack_require__(129);
 			const { Toolkit } = __webpack_require__(461);
 
-			const MAX_LINES = 100;
+			const MAX_LINES = 10;
 
 			/**
 			 * Returns the sentence case representation
@@ -1492,8 +1492,8 @@ module.exports = (function (modules, runtime) {
 			 */
 
 			const commitFile = async () => {
-				await exec("git", ["config", "--global", "user.email", "readme-bot@example.com"]);
-				await exec("git", ["config", "--global", "user.name", "readme-bot"]);
+				await exec("git", ["config", "--global", "user.email", "41898282+github-actions[bot]@users.noreply.github.com"]);
+				await exec("git", ["config", "--global", "user.name", "Github Actions"]);
 				await exec("git", ["add", "README.md"]);
 				await exec("git", ["commit", "-m", ":zap: update readme with the recent activity"]);
 				await exec("git", ["push"]);
@@ -1584,12 +1584,28 @@ module.exports = (function (modules, runtime) {
 				}
 			};
 
-			const timestamper = item =>
-				`\`[${item.created_at.split("T")[0].split("-").slice(1, 3).join("/")} ${item.created_at
-					.split("T")[1]
-					.split(":")
-					.slice(0, 2)
-					.join(":")}]\``;
+			const timestamper = item => {
+				// Parse the created_at time as a Date object
+				const date = new Date(item.created_at);
+			
+				// Add 7 hours to the current time to convert to timezone +7
+				date.setHours(date.getUTCHours() + 7);
+			
+				// Format the date and time
+				const formattedDate = [
+					(date.getMonth() + 1).toString().padStart(2, "0"), // Month (zero-based, so +1)
+					date.getDate().toString().padStart(2, "0") // Day of the month
+				].join("/");
+			
+				const formattedTime = [
+					date.getHours().toString().padStart(2, "0"), // Hours
+					date.getMinutes().toString().padStart(2, "0") // Minutes
+				].join(":");
+			
+				// Return the formatted string with timezone information
+				return `\`[${formattedDate} ${formattedTime} +07]\``;
+			};
+			
 
 			Toolkit.run(
 				async tools => {
@@ -1645,7 +1661,7 @@ module.exports = (function (modules, runtime) {
 							return r;
 						})
 						// We only have five lines to work with
-						.slice(0, MAX_LINES)
+						// .slice(0, MAX_LINES)
 						// Call the serializer to construct a string
 						.map(item => `${timestamper(item)} ${serializers[item.type](item)}`)
 						// Filter out undefined lines
