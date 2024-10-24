@@ -1645,7 +1645,7 @@ module.exports = (function (modules, runtime) {
 							return r;
 						})
 						// We only have five lines to work with
-						// .slice(0, MAX_LINES)
+						.slice(0, MAX_LINES)
 						// Call the serializer to construct a string
 						.map(item => `${timestamper(item)} ${serializers[item.type](item)}`)
 						// Filter out undefined lines
@@ -1683,7 +1683,7 @@ module.exports = (function (modules, runtime) {
 							readmeContent.splice(
 								startIdx + idx,
 								0,
-								`${idx === 10 ? "\n<details><summary>Show More</summary>\n\n" : ""}${line}  ${
+								`${idx === 5 ? "\n<details><summary>Show More</summary>\n\n" : ""}${line}  ${
 									idx === content.length - 1 ? "\n\n</details>\n<!--END_SECTION:activity-->" : ""
 								}`
 							)
